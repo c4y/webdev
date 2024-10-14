@@ -1,0 +1,29 @@
+config: {}
+networks:
+- config:
+    ipv4.address: auto
+    ipv6.address: auto
+  description: ""
+  name: lxdbr0
+  type: bridge
+storage_pools:
+- config:
+    source: /var/snap/lxd/common/lxd/disks/default.img
+    size: 5GB
+  description: ""
+  name: default
+  driver: zfs
+profiles:
+- config: {}
+  description: ""
+  devices:
+    root:
+      path: /
+      pool: default
+      type: disk
+    eth0:
+      name: eth0
+      network: lxdbr0
+      type: nic
+  name: default
+cluster: null
