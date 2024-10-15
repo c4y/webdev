@@ -236,7 +236,7 @@ echo "Install docker in Web-Container and start services..."
 echo "============================="
 sleep 1
 lxc file push setup.conf $containername_www/root/
-curl -O https://raw.githubusercontent.com/c4y/webdev/refs/heads/main/setup/setup-container.web.sh
+curl -O https://raw.githubusercontent.com/c4y/webdev/refs/heads/main/setup/setup-container-web.sh
 lxc file push setup-container-web.sh $containername_www/root/
 rm setup-container.web.sh
 lxc exec $containername_www bash /root/setup-container-web.sh
