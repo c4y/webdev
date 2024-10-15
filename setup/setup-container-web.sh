@@ -16,7 +16,7 @@ install -m 0755 -d /etc/apt/keyrings
 cd /var
 git clone https://github.com/c4y/webdev.git
 mv webdev www
-
+cd /var/www
 
 #====================================================================
 # Docker installieren
@@ -58,9 +58,9 @@ grep -rl 'CONTAINER_IPv4' configs/php | xargs sed -i "s/CONTAINER_IPv4/$ip/g"
 #====================================================================
 # mysql Config anpassen
 #====================================================================
-cp -f configs/mysql/config.cnf.txt configs/mysql/config.cnf
-grep -rl 'a.b.c.d' configs/php | xargs sed -i "s/a.b.c.d/$ip/g"
-
+cp -f configs/mysql/config.cnf.txt configs/mysql/config.conf
+grep -rl 'a.b.c.d' configs/mysql/config.cnf | xargs sed -i "s/a.b.c.d/$ip/g"
+chmod 777 configs/mysql/config.cnf
 
 #====================================================================
 # PHP Repository einbinden und PHP installieren
@@ -99,4 +99,7 @@ mv composer.phar /usr/local/bin/composer
 #====================================================================
 # Docker starten
 #====================================================================
+cd /var/www
+mkdir -p /var/www/configs/coder/.local
+chmod 777 /var/www/configs/coder/.local
 docker compose up -d
