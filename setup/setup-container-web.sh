@@ -115,7 +115,11 @@ sudo bash -c "cat <<EOF > ~/.bash_aliases
 alias php74="/usr/bin/php74"
 alias php81="/usr/bin/php81"
 alias composer74="/usr/bin/php7.4 /usr/local/bin/composer"
-alias migrate="vendor/bin/contao-console contao:migrate"
+alias cmigrate="vendor/bin/contao-console contao:migrate"
+alias csetup="vendor/bin/contao-console contao:setup"
+ccreate() {
+    composer create-project contao/managed-edition $1 $2
+}
 EOF"
 
 
