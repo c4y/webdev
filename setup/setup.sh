@@ -59,7 +59,7 @@ containername_nginx=$containername_nginx
 proxyip=$proxyip
 gateway=$gateway
 domain=$domain
-EOL"
+EOF"
 
 
 #====================================================================
