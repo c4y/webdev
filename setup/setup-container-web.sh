@@ -109,6 +109,17 @@ mv composer.phar /usr/local/bin/composer
 
 
 #====================================================================
+# Aliases hinzufügen
+#====================================================================
+sudo bash -c "cat <<EOF > ~/.bash_aliases
+alias php74="/usr/bin/php74"
+alias php81="/usr/bin/php81"
+alias composer74="/usr/bin/php7.4 /usr/local/bin/composer"
+alias migrate="vendor/bin/contao-console contao:migrate"
+EOF"
+
+
+#====================================================================
 # Docker starten
 #====================================================================
 cd /var/www
