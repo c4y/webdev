@@ -81,3 +81,8 @@ Mailhog ist über http://IP-ADRESSE-DES-WEB-CONTAINERS:8025 erreichbar.
 crontab -e
 0 0 * * * /var/www/bin/backup.sh
 ```
+
+## nginx Proxy Manager
+
+Benutzername: admin@example.com
+Passwort: changeme
