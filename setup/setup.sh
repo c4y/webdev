@@ -4,13 +4,13 @@
 # Set config file
 #====================================================================
 sudo bash -c "cat <<EOF > setup.conf
-containername_www="web"
-containername_nginx="proxy"
-webip="192.168.1.253"
-proxyip="192.168.1.252"
-gateway="192.168.1.1"
-domain="example.de"
-containersize_www="5GB"
+containername_www=web
+containername_nginx=proxy
+webip=192.168.1.253
+proxyip=192.168.1.252
+gateway=192.168.1.1
+domain=example.de
+containersize_www=5GB
 EOF"
 
 
