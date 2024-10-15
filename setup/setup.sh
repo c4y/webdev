@@ -51,15 +51,15 @@ domain=$(prompt_user "Domain (bei z.B dev.example.de bitte nur example.de eingeb
 #====================================================================
 # Write Config
 #====================================================================
-cat > setup.conf <<EOL
-containername_www="$containername_www"
-containersize_www="$containersize_www"
-webip="$webip"
-containername_nginx="$containername_nginx"
-proxyip="$proxyip"
-gateway="$gateway"
-domain="$domain"
-EOL
+sudo bash -c "cat <<EOF > /etc/netplan/50-cloud-init.yaml 
+containername_www=$containername_www
+containersize_www=$containersize_www
+webip=$webip
+containername_nginx=$containername_nginx
+proxyip=$proxyip
+gateway=$gateway
+domain=$domain
+EOL"
 
 
 #====================================================================
@@ -78,13 +78,12 @@ network:
     ethernets:
         $main_iface:
           dhcp4: false
-          # No addresses or routes here since it's part of the bridge
     bridges:
         br0:
           interfaces: [$main_iface]
-          dhcp4: false  # Assign static IP here instead of dhcp4
+          dhcp4: false  
           addresses:
-            - $hostip/24  # Static IP for the bridge
+            - $hostip/24  
           routes:
             - to: default
               via: $gateway
