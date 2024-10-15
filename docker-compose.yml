@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+
+    # Nginx Service
+    nginx:
+        image: nginx:latest
+        ports:
+            - 80:80
+            - 8074:8074
+            - 8081:8081
+        links:
+            - 'php74'
+            - 'php81'
+            - 'php82'
+        volumes:
+            - ./html:/var/www/html
+            - ./configs/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+            - ./logs:/var/logs
+        depends_on:
+            - php81
+        restart: always
+  
+    php74:
+        build:
+            context: ./configs/docker
+            dockerfile: php74-fpm-docker
+        volumes:
+            - './html:/var/www/html'
+            - './configs/php/74/php.ini:/usr/local/etc/php/php.ini'
+            - './configs/php/74/www.conf:/usr/local/etc/php-fpm.d/www.conf'
+            - './configs/php/74/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini'
+        depends_on:
+            - mariadb
+        restart: always 
+    
+    php81:
+        build:
+            context: ./configs/docker
+            dockerfile: php81-fpm-docker
+        volumes:
+            - './html:/var/www/html'
+            - './configs/php/81/php.ini:/usr/local/etc/php/php.ini'
+            - './configs/php/81/www.conf:/usr/local/etc/php-fpm.d/www.conf'
+            - './configs/php/81/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini'
+        depends_on:
+            - mariadb
+        restart: always
+    
+    php82:
+        build:
+            context: ./configs/docker
+            dockerfile: php82-fpm-docker
+        volumes:
+            - './html:/var/www/html'
+            - './configs/php/82/php.ini:/usr/local/etc/php/php.ini'
+            - './configs/php/82/www.conf:/usr/local/etc/php-fpm.d/www.conf'
+            - './configs/php/82/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini'
+        depends_on:
+            - mariadb
+        restart: always
+        
+    
+    mariadb:
+        image: mariadb:10.9
+        ports:
+          - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - mysqldata:/var/lib/mysql
+        restart: always
+
+
+    mailhog:
+        image: mailhog/mailhog
+        ports:
+            - 1025:1025
+            - 8025:8025
+        restart: always
+        
+    code-server:
+        stdin_open: true
+        tty: true
+        container_name: code-server
+        ports:
+            - 8080:8080
+        volumes:
+            - ./configs/coder/.local:/home/coder/.local
+            - ./configs/coder/.config:/home/coder/.config
+            - ./html:/home/coder/project
+        user: 1000:1000
+        environment:
+            - DOCKER_USER=web
+        image: codercom/code-server:latest
+
+
+volumes:
+
+  mysqldata:
+   

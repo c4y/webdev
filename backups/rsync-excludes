@@ -1,0 +1,14 @@
+.git
+
+assets
+public
+system/cache
+system/themes
+system/logs
+system/tmp
+var
+vendor
+web
+
+node_modules
+bielefeld-intranet-413

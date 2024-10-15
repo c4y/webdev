@@ -1,0 +1,23 @@
+FROM php:8.1-fpm
+
+#RUN useradd -d /var/www -s /bin/bash web
+#RUN chown -R web /var/www/html
+
+# Installing dependencies for the PHP modules
+RUN apt-get update && \
+    apt-get install -y zip gettext openssl libzip-dev libpng-dev libicu-dev libjpeg-dev libjpeg62-turbo-dev libxml2-dev libwebp-dev libfreetype6-dev libgd-dev
+
+# Installing additional PHP modules
+RUN docker-php-ext-configure intl
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
+RUN docker-php-ext-install gd mysqli pdo pdo_mysql zip intl
+
+# Imagick
+RUN apt-get install -y libmagickwand-dev
+RUN apt-get install -y imagemagick
+RUN pecl install imagick
+RUN docker-php-ext-enable imagick
+
+# Xdebug
+RUN pecl install xdebug-3.1.6
+RUN docker-php-ext-enable xdebug

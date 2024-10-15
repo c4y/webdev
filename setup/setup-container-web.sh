@@ -1,0 +1,102 @@
+#!/usr/bin/bash
+
+source setup.conf
+
+#====================================================================
+# Pakete installieren
+#====================================================================
+apt update
+apt -y install net-tools bridge-utils vsftpd ca-certificates curl unzip git
+install -m 0755 -d /etc/apt/keyrings
+
+
+#====================================================================
+# git Repository clonen
+#====================================================================
+cd /var
+git clone https://github.com/c4y/webdev.git
+mv webdev www
+
+
+#====================================================================
+# Docker installieren
+#====================================================================
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt update
+apt -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+
+#====================================================================
+# FTP mit write-access aktivieren
+#====================================================================
+grep -rl '#write_enable=YES' /etc/vsftpd.conf | xargs sed -i "s/#write_enable=YES/write_enable=YES/g"
+grep -rl '#local_umask=022' /etc/vsftpd.conf | xargs sed -i "s/#local_umask=022/local_umask=002/g"
+service vsftpd restart
+
+
+#====================================================================
+# Domain/nginx anpassen
+#====================================================================
+cp -f configs/nginx/nginx.conf.txt configs/nginx/nginx.conf
+grep -l 'example.com' configs/nginx/nginx.conf | xargs sed -i "s/example.com/$domain/g"
+
+
+#====================================================================
+# IP-Adresse vom Container ermitteln
+#====================================================================
+ip=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+
+
+#====================================================================
+# XDEBUG IP Adresse eintragen
+#====================================================================
+grep -rl 'CONTAINER_IPv4' configs/php | xargs sed -i "s/CONTAINER_IPv4/$ip/g"
+
+
+#====================================================================
+# mysql Config anpassen
+#====================================================================
+cp -f configs/mysql/config.cnf.txt configs/mysql/config.cnf
+grep -rl 'a.b.c.d' configs/php | xargs sed -i "s/a.b.c.d/$ip/g"
+
+
+#====================================================================
+# PHP Repository einbinden und PHP installieren
+#====================================================================
+sudo apt-get install software-properties-common
+add-apt-repository -y ppa:ondrej/php
+apt update
+
+apt -y install php7.4-curl php7.4-fpm php7.4-gd php7.4-imagick php7.4-intl php7.4-mbstring php7.4-mysql php7.4-xml php7.4-zip
+apt -y install php8.2-curl php8.2-fpm php8.2-gd php8.2-imagick php8.2-intl php8.2-mbstring php8.2-mysql php8.2-xml php8.2-zip
+apt -y install php8.3-curl php8.3-fpm php8.3-gd php8.3-imagick php8.3-intl php8.3-mbstring php8.3-mysql php8.3-xml php8.3-zip
+
+
+#====================================================================
+# Benutzer anlegen
+#====================================================================
+mkdir -p /var/www
+sudo useradd -d /var/www -s /bin/bash -g www-data web && echo "web:web" | sudo chpasswd
+chown web:www-data /var
+chown -R web:www-data /var/www
+chmod 775 /var
+chmod -R 775 /var/www
+chmod +x /var
+
+
+#====================================================================
+# Composer installieren
+#====================================================================
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+mv composer.phar /usr/local/bin/composer
+
+
+#====================================================================
+# Docker starten
+#====================================================================
+docker compose up -d
