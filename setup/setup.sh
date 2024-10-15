@@ -13,6 +13,7 @@ domain=example.de
 containersize_www=5GB
 EOF"
 
+source setup.conf
 
 #====================================================================
 # Prompt User Function with default Value
