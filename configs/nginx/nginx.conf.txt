@@ -1,4 +1,4 @@
-# PHP 8.2 default
+# PHP 8.3 default
 server {
     listen 80;
 
@@ -20,7 +20,7 @@ server {
     }
 
     location ~ ^/(preview|contao-manager\.phar)\.php(/|$) {
-        fastcgi_pass php82:9000;
+        fastcgi_pass php83:9000;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_param SCRIPT_NAME $fastcgi_script_name;
@@ -34,7 +34,7 @@ server {
         add_header Access-Control-Allow-Origin '*';
         add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
         add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
-        fastcgi_pass php82:9000;
+        fastcgi_pass php83:9000;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
         fastcgi_param DOCUMENT_ROOT $realpath_root;
@@ -153,6 +153,59 @@ server {
     
     location ~ \.php$ {
         fastcgi_pass php81:9000;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        fastcgi_buffer_size 128k;
+        fastcgi_buffers 4 256k;
+        fastcgi_busy_buffers_size 256k;
+        include fastcgi_params;
+        #internal;
+    }
+    
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+        try_files $uri /index.php$is_args$args;
+    }
+    
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+        log_not_found off;
+        try_files $uri /index.php$is_args$args;
+    }
+}
+
+# PHP 8.2
+server {
+    listen 8083;
+    
+    server_name ~^(?<projekt>.+)\..*\.example.com$;
+    root /var/www/html/$projekt/public;
+    index index.php index.html;
+
+    proxy_buffer_size 128k;
+    proxy_buffers 4 256k;
+    proxy_busy_buffers_size 256k;
+
+    client_max_body_size 64M;
+
+    location / {
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
+
+    location ~ ^/(preview|contao-manager\.phar)\.php(/|$) {
+        fastcgi_pass php82:9000;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+        fastcgi_buffer_size 128k;
+        fastcgi_buffers 4 256k;
+        fastcgi_busy_buffers_size 256k;
+        include fastcgi_params;
+    }
+    
+    location ~ \.php$ {
+        fastcgi_pass php82:9000;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
         fastcgi_param DOCUMENT_ROOT $realpath_root;

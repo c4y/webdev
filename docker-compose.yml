@@ -9,10 +9,12 @@ services:
             - 80:80
             - 8074:8074
             - 8081:8081
+            - 8083:8083
         links:
             - 'php74'
             - 'php81'
             - 'php82'
+            - 'php83'
         volumes:
             - ./html:/var/www/html
             - ./configs/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
@@ -56,6 +58,19 @@ services:
             - './configs/php/82/php.ini:/usr/local/etc/php/php.ini'
             - './configs/php/82/www.conf:/usr/local/etc/php-fpm.d/www.conf'
             - './configs/php/82/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini'
+        depends_on:
+            - mariadb
+        restart: always
+
+    php83:
+        build:
+            context: ./configs/docker
+            dockerfile: php83-fpm-docker
+        volumes:
+            - './html:/var/www/html'
+            - './configs/php/83/php.ini:/usr/local/etc/php/php.ini'
+            - './configs/php/83/www.conf:/usr/local/etc/php-fpm.d/www.conf'
+            - './configs/php/83/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini'
         depends_on:
             - mariadb
         restart: always

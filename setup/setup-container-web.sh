@@ -77,13 +77,25 @@ apt -y install php8.3-curl php8.3-fpm php8.3-gd php8.3-imagick php8.3-intl php8.
 #====================================================================
 # Benutzer anlegen
 #====================================================================
+deluser --remove-home ubuntu
 mkdir -p /var/www
-sudo useradd -d /var/www -s /bin/bash -g www-data web && echo "web:web" | sudo chpasswd
+sudo useradd -d /var/www -s /bin/bash -g www-data -u 1000 web && echo "web:web" | sudo chpasswd
 chown web:www-data /var
 chown -R web:www-data /var/www
 chmod 775 /var
 chmod -R 775 /var/www
 chmod +x /var
+
+
+#====================================================================
+# SSH per User erlauben
+#====================================================================
+rm /etc/ssh/sshd_config.d/*
+sudo bash -c "cat <<EOF > /etc/ssh/sshd_config.d/web.conf
+PasswordAuthentication yes
+PermitRootLogin yes
+EOF"
+systemctl restart ssh
 
 
 #====================================================================

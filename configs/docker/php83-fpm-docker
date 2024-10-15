@@ -9,12 +9,19 @@ RUN apt-get update && \
 
 # Installing additional PHP modules
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
-RUN docker-php-ext-install gd
-RUN docker-php-ext-install mysqli pdo pdo_mysql zip
 RUN docker-php-ext-configure intl
-RUN docker-php-ext-install intl
+RUN docker-php-ext-install gd mysqli pdo pdo_mysql zip intl
+
+# Imagick
 RUN apt-get install -y libmagickwand-dev
 RUN apt-get install -y imagemagick
-
 RUN pecl install imagick
-RUN pecl install xdebug && docker-php-ext-enable xdebug
+RUN docker-php-ext-enable imagick
+
+# Xdebug
+RUN pecl install xdebug
+RUN docker-php-ext-enable xdebug
+
+# Install and enable OPcache
+RUN docker-php-ext-install opcache
+RUN docker-php-ext-enable opcache

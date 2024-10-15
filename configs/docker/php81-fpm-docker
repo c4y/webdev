@@ -21,3 +21,7 @@ RUN docker-php-ext-enable imagick
 # Xdebug
 RUN pecl install xdebug-3.1.6
 RUN docker-php-ext-enable xdebug
+
+# Install and enable OPcache
+RUN docker-php-ext-install opcache
+RUN docker-php-ext-enable opcache
