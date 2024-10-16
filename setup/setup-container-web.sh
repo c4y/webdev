@@ -6,7 +6,7 @@ source setup.conf
 # Pakete installieren
 #====================================================================
 apt update
-apt -y install net-tools bridge-utils vsftpd ca-certificates curl unzip git
+apt -y install samba net-tools bridge-utils vsftpd ca-certificates curl unzip git
 install -m 0755 -d /etc/apt/keyrings
 
 
@@ -35,6 +35,22 @@ grep -rl '#write_enable=YES' /etc/vsftpd.conf | xargs sed -i "s/#write_enable=YE
 grep -rl '#local_umask=022' /etc/vsftpd.conf | xargs sed -i "s/#local_umask=022/local_umask=002/g"
 service vsftpd restart
 
+
+#====================================================================
+# Samba einrichten
+#====================================================================
+sudo bash -c "cat <<EOF >> /etc/samba/smb.conf
+[web]
+path = /var/www
+writeable = yes
+valid users = web
+EOF"
+
+SAMBA_USER="web"
+SAMBA_PASSWORD="web"
+(echo "$SAMBA_PASSWORD"; echo "$SAMBA_PASSWORD") | sudo smbpasswd -a "$SAMBA_USER"
+
+sudo systemctl restart smbd.service 
 
 #====================================================================
 # Domain/nginx anpassen
