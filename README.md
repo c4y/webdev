@@ -13,7 +13,7 @@ Das Ziel dieser Entwicklungsumgebung ist eine Docker-basierte Lösung auf einem 
 ## Installation (ohne Proxmox)
 
 ```
-curl -sL https://contao4you.de/webdev-setup | sudo bash
+bash <(curl -sL https://contao4you.de/webdev-setup)
 ```
 
 **Weitere Schritte**
