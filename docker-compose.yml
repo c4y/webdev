@@ -85,6 +85,21 @@ services:
             - mysqldata:/var/lib/mysql
         restart: always
 
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 82:80
+        environment:
+            PMA_HOST: PMA-HOST-IP-ADDRESS
+            MYSQL_ROOT_PASSWORD: root
+            PMA_USER: root
+            PMA_PASSWORD: root
+            MEMORY_LIMIT: 512M
+            UPLOAD_LIMIT: 256M
+        depends_on:
+            - mariadb
+        restart: always
+
 
     mailhog:
         image: mailhog/mailhog
