@@ -135,7 +135,7 @@ mv composer.phar /usr/local/bin/composer
 #====================================================================
 # Aliases hinzufügen
 #====================================================================
-sudo bash -c "cat <<EOF > /home/web/.bash_aliases
+sudo bash -c 'cat <<EOF > /home/web/.bash_aliases
 alias php74="/usr/bin/php74"
 alias php81="/usr/bin/php81"
 alias php82="/usr/bin/php82"
@@ -146,9 +146,9 @@ alias composer82="/usr/bin/php8.2 /usr/local/bin/composer"
 alias cmigrate="vendor/bin/contao-console contao:migrate"
 alias csetup="vendor/bin/contao-console contao:setup"
 ccreate() {
-    composer create-project contao/managed-edition $1 $2
+    composer create-project contao/managed-edition "$1" "$2"
 }
-EOF"
+EOF'
 
 #====================================================================
 # PMA_HOST für phpMyAdmin eintragen
