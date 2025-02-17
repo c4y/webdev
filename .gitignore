@@ -1,4 +1,3 @@
-configs/coder/.local
 configs/mysql/config.conf
 configs/nginx/nginx.conf
 configs/php/*/xdebug.ini
