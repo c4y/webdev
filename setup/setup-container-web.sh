@@ -32,6 +32,7 @@ apt -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker
 #====================================================================
 deluser --remove-home ubuntu
 mkdir -p /var/www
+mkdir -p /home/web
 sudo useradd -s /bin/bash -g www-data -u 1000 web && echo "web:web" | sudo chpasswd
 chown web:www-data /var
 chown -R web:www-data /var/www
@@ -134,10 +135,14 @@ mv composer.phar /usr/local/bin/composer
 #====================================================================
 # Aliases hinzufügen
 #====================================================================
-sudo bash -c "cat <<EOF > ~/.bash_aliases
+sudo bash -c "cat <<EOF > /home/web/.bash_aliases
 alias php74="/usr/bin/php74"
 alias php81="/usr/bin/php81"
+alias php82="/usr/bin/php82"
+alias php83="/usr/bin/php83"
 alias composer74="/usr/bin/php7.4 /usr/local/bin/composer"
+alias composer81="/usr/bin/php8.1 /usr/local/bin/composer"
+alias composer82="/usr/bin/php8.2 /usr/local/bin/composer"
 alias cmigrate="vendor/bin/contao-console contao:migrate"
 alias csetup="vendor/bin/contao-console contao:setup"
 ccreate() {
