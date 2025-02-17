@@ -39,7 +39,7 @@ chown -R web:www-data /var/www
 chmod 775 /var
 chmod -R 775 /var/www
 chmod +x /var
-
+usermod -aG sudo web
 
 #====================================================================
 # FTP mit write-access aktivieren
