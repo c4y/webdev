@@ -1,7 +1,9 @@
 FROM php:8.3-fpm
 
-#RUN useradd -d /var/www -s /bin/bash web
-#RUN chown -R web /var/www/html
+RUN groupadd -g 1000 web
+RUN useradd -d /home/web -s /bin/bash -u 1000 -g 1000 web
+RUN mkdir /home/web
+RUN chown -R web /var/www/html
 
 # Installing dependencies for the PHP modules
 RUN apt-get update && \
@@ -9,19 +11,23 @@ RUN apt-get update && \
 
 # Installing additional PHP modules
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
+RUN docker-php-ext-install gd
+RUN docker-php-ext-install mysqli pdo pdo_mysql zip
 RUN docker-php-ext-configure intl
-RUN docker-php-ext-install gd mysqli pdo pdo_mysql zip intl
-
-# Imagick
+RUN docker-php-ext-install intl
 RUN apt-get install -y libmagickwand-dev
-RUN apt-get install -y imagemagick
-RUN pecl install imagick
-RUN docker-php-ext-enable imagick
+RUN pecl install xdebug && docker-php-ext-enable xdebug
 
-# Xdebug
-RUN pecl install xdebug
-RUN docker-php-ext-enable xdebug
+RUN apt-get update && apt-get install -y \
+    git build-essential autoconf libtool libmagickwand-dev imagemagick && \
+    git clone https://github.com/Imagick/imagick.git --depth 1 /tmp/imagick && \
+    cd /tmp/imagick && \
+    phpize && \
+    ./configure && \
+    make && \
+    make install && \
+    docker-php-ext-enable imagick && \
+    apt-get purge -y --auto-remove git build-essential autoconf libtool && \
+    rm -rf /tmp/imagick /var/lib/apt/lists/*
 
-# Install and enable OPcache
-RUN docker-php-ext-install opcache
-RUN docker-php-ext-enable opcache
+

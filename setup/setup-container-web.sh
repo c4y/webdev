@@ -27,6 +27,18 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
 apt update
 apt -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+#====================================================================
+# Benutzer anlegen
+#====================================================================
+deluser --remove-home ubuntu
+mkdir -p /var/www
+sudo useradd -s /bin/bash -g www-data -u 1000 web && echo "web:web" | sudo chpasswd
+chown web:www-data /var
+chown -R web:www-data /var/www
+chmod 775 /var
+chmod -R 775 /var/www
+chmod +x /var
+
 
 #====================================================================
 # FTP mit write-access aktivieren
@@ -68,7 +80,13 @@ ip=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
 #====================================================================
 # XDEBUG IP Adresse eintragen
 #====================================================================
-grep -rl 'CONTAINER_IPv4' configs/php | xargs sed -i "s/CONTAINER_IPv4/$ip/g"
+# Kopiere jede xdebug.txt nach xdebug.ini, ohne die xdebug.txt zu verändern
+for file in configs/php/*/xdebug.txt; do
+  cp "$file" "${file%.txt}.ini"
+done
+
+# Ersetze "CONTAINER_IPv4" nur in den xdebug.ini Dateien
+grep -rl 'CONTAINER_IPv4' configs/php/*/xdebug.ini | xargs sed -i "s/CONTAINER_IPv4/$ip/g"
 
 
 #====================================================================
@@ -86,21 +104,10 @@ add-apt-repository -y ppa:ondrej/php
 apt update
 
 apt -y install php7.4-curl php7.4-fpm php7.4-gd php7.4-imagick php7.4-intl php7.4-mbstring php7.4-mysql php7.4-xml php7.4-zip
+apt -y install php8.1-curl php8.1-fpm php8.1-gd php8.1-imagick php8.1-intl php8.1-mbstring php8.1-mysql php8.1-xml php8.1-zip
 apt -y install php8.2-curl php8.2-fpm php8.2-gd php8.2-imagick php8.2-intl php8.2-mbstring php8.2-mysql php8.2-xml php8.2-zip
 apt -y install php8.3-curl php8.3-fpm php8.3-gd php8.3-imagick php8.3-intl php8.3-mbstring php8.3-mysql php8.3-xml php8.3-zip
 
-
-#====================================================================
-# Benutzer anlegen
-#====================================================================
-deluser --remove-home ubuntu
-mkdir -p /var/www
-sudo useradd -d /var/www -s /bin/bash -g www-data -u 1000 web && echo "web:web" | sudo chpasswd
-chown web:www-data /var
-chown -R web:www-data /var/www
-chmod 775 /var
-chmod -R 775 /var/www
-chmod +x /var
 
 
 #====================================================================
