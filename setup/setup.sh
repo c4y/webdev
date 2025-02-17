@@ -331,8 +331,40 @@ echo "Container ${containername_nginx} is ready..."
 #====================================================================
 # Ready
 #====================================================================
-echo "============================="
-echo "Try http://test.local.${domain}"
-echo "============================="
+#!/bin/bash
+
+# Farben definieren
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+CYAN='\033[1;36m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+echo -e "${GREEN}✅ Die Installation ist abgeschlossen!${NC}"
+echo -e "🎉 Deine erste Seite ist schon erreichbar unter: ${CYAN}http://test.local.${domain}${NC} (mit PHP 8.3)\n"
+
+echo -e "${YELLOW}🔗 Folgende URLs stehen Dir nun zur Verfügung:${NC}"
+echo -e "  🐘 phpMyAdmin:   ${CYAN}http://${webip}:82${NC}"
+echo -e "  🌐 nginx:        ${CYAN}http://${proxyip}:81${NC} (admin@example.com / changeme)"
+echo -e "  🐘 PHP 7.4:      ${CYAN}http://test.local.${domain}:8074${NC}"
+echo -e "  🐘 PHP 8.1:      ${CYAN}http://test.local.${domain}:8081${NC}"
+echo -e "  🐘 PHP 8.2:      ${CYAN}http://test.local.${domain}:8082${NC}\n"
+
+echo -e "${YELLOW}📧 Es steht Dir auch ein Mail-Server zur Verfügung:${NC}"
+echo -e "  📤 SMTP Port:   ${CYAN}1025${NC}"
+echo -e "  🔑 Benutzer/Passwort: ${CYAN}egal${NC}"
+echo -e "  📬 GUI:         ${CYAN}http://${webip}:8025${NC}\n"
+
+echo -e "${YELLOW}💻 Für unterwegs kann auch VS Code im Browser genutzt werden:${NC}"
+echo -e "  ${CYAN}http://${webip}:8080${NC} (Passwort: web)\n"
+
+echo -e "${YELLOW}🛠 Gearbeitet wird per VS Code mit Remote SSH auf:${NC}"
+echo -e "  🔗 ${CYAN}${webip}${NC} (Benutzername/Passwort: web)\n"
+
+echo -e "${YELLOW}📂 Dateien können per SMB (Windows-Freigabe) hin- und hergeschubst werden:${NC}"
+echo -e "  🔑 Benutzername/Passwort: ${CYAN}web${NC}\n"
+
+echo -e "${GREEN}🚀 Viel Spaß mit deiner neuen Entwicklungsumgebung! 🎉${NC}"
+
 
 
