@@ -310,7 +310,7 @@ EOF"
 sleep 1
 lxc file delete $containername_nginx/etc/netplan/50-cloud-init.yaml
 lxc file push 01-web-init.yaml $containername_nginx/etc/netplan/01-web-init.yaml
-rm 01-web-init.yaml
+rm -f 01-web-init.yaml
 lxc restart $containername_nginx
 
 #====================================================================
