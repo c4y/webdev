@@ -7,12 +7,13 @@ RUN chown -R web /var/www/html
 
 # Installing dependencies for the PHP modules
 RUN apt-get update && \
-    apt-get install -y zip gettext openssl libzip-dev libpng-dev libicu-dev libjpeg-dev libjpeg62-turbo-dev libxml2-dev libwebp-dev libfreetype6-dev libgd-dev
+    apt-get install -y zip gettext openssl libzip-dev libpng-dev \
+    libicu-dev libjpeg-dev libjpeg62-turbo-dev libxml2-dev libwebp-dev \
+    libfreetype6-dev libgd-dev libgmp-dev
 
 # Installing additional PHP modules
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
-RUN docker-php-ext-install gd
-RUN docker-php-ext-install mysqli pdo pdo_mysql zip
+RUN docker-php-ext-install gd mysqli pdo pdo_mysql zip gmp bcmath
 RUN docker-php-ext-configure intl
 RUN docker-php-ext-install intl
 RUN apt-get install -y libmagickwand-dev
